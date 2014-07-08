@@ -1,0 +1,54 @@
+#!/bin/bash
+set -e
+
+# keypass 0.1
+# Built by: Toby Padilla <tobypadilla@gmail.com>
+# http://keybase.io/toby | http://github.com/toby | http://twitter.com/toby
+
+# Your keybase.io user name
+KEYBASE_USER=toby
+
+# Directory to store your encrypted passwords file
+PASS_DIR=~/Dropbox
+PASS_FILE=$PASS_DIR/keypass.txt.asc
+
+usage() {
+  echo "usage: $(basename $0) {list [\"TERM\"] | add URL USER PASS [\"DESC\"]}"
+}
+
+list() {
+  PASSES=$(keybase decrypt $PASS_FILE)
+  if [[ -n "$1" ]]
+  then
+    echo -e "$PASSES" | grep -i "$1"
+  else
+    echo -e "$PASSES"
+  fi
+}
+
+add() {
+  # Domain, user and pass are not optional
+  if [[ -n "$1" && -n "$2" && -n "$3" ]];
+  then
+    PASS_ENTRY="$1\t$2\t$3\t$4"
+    # Don't try to decrypt a file that doesn't exist
+    if [ ! -f $PASS_FILE ]
+    then
+      PASSES="$PASS_ENTRY"
+    else
+      # I would use sed for this but it's broken on OS X
+      PASSES=$(keybase decrypt $PASS_FILE)
+      PASSES=$(printf "$PASSES\n$PASS_ENTRY")
+    fi
+
+    printf "$PASSES" | keybase encrypt $KEYBASE_USER -o $PASS_FILE
+  else
+    usage
+  fi
+}
+
+case "$1" in
+  list) list "$2";;
+  add) add "$2" "$3" "$4" "$5";;
+  *) usage;;
+esac
