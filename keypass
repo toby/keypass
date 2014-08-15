@@ -13,7 +13,7 @@ PASS_DIR=~/Dropbox
 PASS_FILE=$PASS_DIR/keypass.txt.asc
 
 usage() {
-  echo "usage: $(basename $0) {list [\"TERM\"] | add URL USER PASS [\"DESC\"]}"
+  echo "usage: $(basename $0) {gen CHARACTERS | list [\"TERM\"] | add URL USER PASS [\"DESC\"]}"
 }
 
 list() {
@@ -47,8 +47,13 @@ add() {
   fi
 }
 
+gen() {
+  openssl rand -base64 $1
+}
+
 case "$1" in
   list) list "$2";;
   add) add "$2" "$3" "$4" "$5";;
+  gen) gen "$2";;
   *) usage;;
 esac
