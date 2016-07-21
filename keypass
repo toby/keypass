@@ -17,7 +17,7 @@ usage() {
 }
 
 list() {
-  PASSES=$(keybase decrypt $PASS_FILE)
+  PASSES=$(keybase pgp decrypt -i $PASS_FILE)
   if [[ -n "$1" ]]
   then
     echo -e "$PASSES" | grep -i "$1"
