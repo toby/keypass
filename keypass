@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# keypass 0.1
+# keypass - Manage passwords with Keybase
 # Built by: Toby Padilla <tobypadilla@gmail.com>
 # http://keybase.io/toby | http://github.com/toby | http://twitter.com/toby
 
@@ -52,8 +52,8 @@ gen() {
 }
 
 case "$1" in
-  list) list "$2";;
-  add) add "$2" "$3" "$4" "$5";;
-  gen) gen "$2";;
+  'l'|list) list "$2";;
+  'a'|add) add "$2" "$3" "$4" "$5";;
+  'g'|gen) gen "$2";;
   *) usage;;
 esac
