@@ -13,7 +13,15 @@ PASS_DIR=~/Dropbox
 PASS_FILE=$PASS_DIR/keypass.txt.asc
 
 usage() {
-  echo "usage: $(basename $0) {gen CHARACTERS | list [\"TERM\"] | add URL USER PASS [\"DESC\"]}"
+  echo "usage: $(basename $0) {gen CHARACTERS | list [\"TERM\"] | add URL USER PASS [\"DESC\" | interactive}"
+}
+
+decrypted_passes() {
+  echo "$(keybase decrypt -i $PASS_FILE)"
+}
+
+encrypt_passes() {
+  keybase encrypt $KEYBASE_USER -o $PASS_FILE
 }
 
 list() {
@@ -38,7 +46,7 @@ add() {
       PASSES=$(printf "$PASSES\n$PASS_ENTRY")
     fi
 
-    printf "$PASSES" | keybase encrypt $KEYBASE_USER -o $PASS_FILE
+    printf "$PASSES" | encrypt_passes
   else
     usage
   fi
@@ -48,13 +56,19 @@ gen() {
   openssl rand -base64 $1
 }
 
-decrypted_passes() {
-  echo "$(keybase decrypt -i $PASS_FILE)"
+interactive() {
+  TEMP=$(mktemp)
+  PASSES=$(decrypted_passes)
+  echo "$PASSES" > $TEMP
+  "${EDITOR:-vi}" $TEMP
+  cat $TEMP | encrypt_passes
+  rm $TEMP
 }
 
 case "$1" in
   'l'|list) list "$2";;
   'a'|add) add "$2" "$3" "$4" "$5";;
   'g'|gen) gen "$2";;
+  'i'|interactive) interactive;;
   *) usage;;
 esac
