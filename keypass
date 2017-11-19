@@ -12,8 +12,22 @@ KEYBASE_USER=toby
 PASS_DIR=~/Dropbox
 PASS_FILE=$PASS_DIR/keypass.txt.asc
 
+
 usage() {
-  echo "usage: $(basename $0) {gen CHARACTERS | list [\"TERM\"] | add URL USER PASS [\"DESC\" | interactive}"
+cat << EOF
+USAGE:
+  $(basename $0) { list ["TERM"] | add URL USER PASS ["DESC"] | gen [LENGTH] | interactive }
+
+COMMANDS:
+  list ["TERM"]                 Decrypt and list passwords, optionally matching "TERM"
+  add URL USER PASS ["DESC"]    Add the url, username and password with optional description
+  gen [LENGTH]                  Generate a new password with optional length
+  interactive                   Interactively edit the password file with \$EDITOR
+
+INFO:
+  * You can use the first letter of each command as a shortcut (e.g \`keypass i\` for interactive mode.
+  * Interactive is the only command that will generate (and clean up) a temporary file.
+EOF
 }
 
 decrypted_passes() {
@@ -45,7 +59,6 @@ add() {
       PASSES=$(decrypted_passes)
       PASSES=$(printf "$PASSES\n$PASS_ENTRY")
     fi
-
     printf "$PASSES" | encrypt_passes
   else
     usage
