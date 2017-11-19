@@ -53,7 +53,7 @@ add() {
 }
 
 gen() {
-  openssl rand -base64 $1
+  openssl rand -base64 ${1:-8}
 }
 
 interactive() {
