@@ -17,7 +17,7 @@ usage() {
 }
 
 list() {
-  PASSES=$(keybase pgp decrypt -i $PASS_FILE)
+  PASSES=$(keybase decrypt -i $PASS_FILE)
   if [[ -n "$1" ]]
   then
     echo -e "$PASSES" | grep -i "$1"
@@ -37,7 +37,7 @@ add() {
       PASSES="$PASS_ENTRY"
     else
       # I would use sed for this but it's broken on OS X
-      PASSES=$(keybase decrypt $PASS_FILE)
+      PASSES=$(keybase decrypt -i $PASS_FILE)
       PASSES=$(printf "$PASSES\n$PASS_ENTRY")
     fi
 
